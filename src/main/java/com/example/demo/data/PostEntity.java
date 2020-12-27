@@ -2,12 +2,15 @@ package com.example.demo.data;
 
 import java.util.Date;
 import java.util.Map;
+
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 
 @Document(collection = "posts")
 public class PostEntity {
 	
+	@Id private String id;
 	private UserEntity user; 
 	private ProductEntity product;
 	private Date postingTimestamp;
@@ -26,6 +29,16 @@ public class PostEntity {
 		this.postingTimestamp = postingTimestamp;
 		this.language = language;
 		this.postContent = postContent;
+	}
+	
+	
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 
 	public UserEntity getUser() {
