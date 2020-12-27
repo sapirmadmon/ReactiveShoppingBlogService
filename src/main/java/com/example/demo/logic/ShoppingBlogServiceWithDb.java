@@ -1,17 +1,18 @@
 package com.example.demo.logic;
 
+import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.boundaries.PostBoundary;
-import com.example.demo.boundaries.ProductBoundary;
-import com.example.demo.boundaries.UserBoundary;
 import com.example.demo.dal.PostDao;
-import com.example.demo.data.PostEntity;
-import com.example.demo.data.ProductEntity;
-import com.example.demo.data.UserEntity;
 import com.example.demo.data.converter.PostConverter;
+import com.example.demo.utility.TimeEnum;
 
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service
@@ -20,11 +21,19 @@ public class ShoppingBlogServiceWithDb implements ShoppingBlogService {
 	private PostDao posts;
 	private PostConverter converter;
 	
+	
 	@Autowired
 	public ShoppingBlogServiceWithDb(PostDao posts) {
 		super();
 		this.posts = posts;
 	}
+
+	
+	@Autowired
+	public void setConverter(PostConverter converter) {
+		this.converter = converter;
+	}
+
 
 
 	@Override
@@ -32,70 +41,68 @@ public class ShoppingBlogServiceWithDb implements ShoppingBlogService {
 		
 	
 		return Mono.just(post)
-				.map(boundary -> this.toEntity(boundary))
-				.flatMap(entity -> this.posts.save(entity))
-				.map(this::fromEntity);
-		/*	return Mono.just(post) // Mono<PostBoundary>
-				
 				.map(boundary->{
-					boundary.setCreationTimestamp(new Date());
+					boundary.setPostingTimestamp(new Date());
 					return boundary;
-				}) // Mono<MessageBoundary>
-				
-				.map(boundary->this.toEntity(boundary)) // Mono<PostBoundary>
-				
-				.map(entity->
-					this.posts
-					.save(entity)) // Mono<PostBoundary>
-				
-				.map(this::fromEntity); // Mono<PostBoundary>*/
+				})
+				.map(boundary -> this.converter.toEntity(boundary))
+				.flatMap(entity -> this.posts.save(entity))
+				.map(this.converter::fromEntity);
+	
 	}
 	
 	
-	private PostBoundary fromEntity (PostEntity entity) {
-		PostBoundary pb = new PostBoundary();
-		pb.setUser(fromEntityUser(entity.getUser()));
-		pb.setLanguage(entity.getLanguage());
-		pb.setProduct(fromEntityProduct(entity.getProduct()));
-		pb.setPostingTimestamp(entity.getPostingTimestamp());
-		pb.setPostContent(entity.getPostContent());
-		return pb;
+	
+	@Override
+	public Flux<PostBoundary> getAll(String email, String sortBy, boolean sortOrder) {
+
+		return this.posts.findAllByUser_Email(email, Sort.by(sortOrder?Direction.ASC:Direction.DESC, sortBy))
+				.map(this.converter::fromEntity);
 	}
 
-	private  PostEntity toEntity (PostBoundary boundary) {
-		PostEntity entity = new PostEntity();
-		entity.setUser(toEntityUser(boundary.getUser()));
-		entity.setLanguage(boundary.getLanguage());
-		entity.setProduct(toEntityProduct(boundary.getProduct()));
-		entity.setPostingTimestamp(boundary.getPostingTimestamp());
-		entity.setPostContent(boundary.getPostContent());
+
+	@Override
+	public Flux<PostBoundary> getByLanguage(String email, String value, String sortBy, boolean sortOrder) {
 		
-		return entity;
+		return this.posts.findAllByUser_EmailAndLanguage(email, value, Sort.by(sortOrder?Direction.ASC:Direction.DESC, sortBy))
+				.map(this.converter::fromEntity);
 	}
-	
-	private ProductBoundary fromEntityProduct(ProductEntity entity) {
-		ProductBoundary boundary = new ProductBoundary();
-		boundary.setId(entity.getId());
-		return boundary;
-	}
-	
-	private ProductEntity toEntityProduct(ProductBoundary boundary) {
-		ProductEntity entity = new ProductEntity();
-		entity.setId(boundary.getId());
-		return entity;
 
+
+	@Override
+	public Flux<PostBoundary> getByCreation(String email, String value, String sortBy, boolean sortOrder) {
+
+		Date date; 
+		
+		if(value.equalsIgnoreCase(TimeEnum.lastDay.name())) {
+			System.err.println(value);
+			date = new Date(System.currentTimeMillis() - (24*60*60*1000)); //24 hours before
+		}
+		
+		else if(value.equalsIgnoreCase(TimeEnum.lastWeek.name())) {
+			System.err.println(value);
+			date = new Date(System.currentTimeMillis() - (7*24*60*60*1000)); 
+		}
+		
+		else {
+			System.err.println(value);
+			date = new Date(System.currentTimeMillis() - (30*24*60*60*1000)); 
+		}
+		
+		return this.posts.findAllByUser_EmailAndPostingTimestampGreaterThanEqual(email, date, Sort.by(sortOrder?Direction.ASC:Direction.DESC, sortBy))
+				.map(this.converter::fromEntity);
+	}
+
+
+	@Override
+	public Flux<PostBoundary> getByProduct(String email, String value, String sortBy, boolean sortOrder) {
+		return this.posts.findAllByUser_EmailAndProduct_Id(email, value, Sort.by(sortOrder?Direction.ASC:Direction.DESC, sortBy))
+				.map(this.converter::fromEntity);
 	}
 	
-	private UserBoundary fromEntityUser(UserEntity entity) {
-		UserBoundary boundary = new UserBoundary();
-		boundary.setEmail(entity.getEmail());
-		return boundary;
-	}
+
 	
-	private UserEntity toEntityUser (UserBoundary boundary) {
-		UserEntity entity = new UserEntity();
-		entity.setEmail(boundary.getEmail());
-		return entity;
-	}
+
+
 
 }
