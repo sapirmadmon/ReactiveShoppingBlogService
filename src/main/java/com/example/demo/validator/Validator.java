@@ -11,7 +11,13 @@ import com.example.demo.utility.TimeEnum;
 public class Validator {
 
 	public Date validDate(String value) {
-		TimeEnum timeEnum = TimeEnum.valueOf(value);
+		TimeEnum timeEnum;
+		try {
+			timeEnum = TimeEnum.valueOf(value);
+		} catch (Exception ex) {
+			return null;
+		}
+		System.err.println(timeEnum);
 		switch (timeEnum) {
 		case lastDay:
 			return new Date(System.currentTimeMillis() - (TimeUnit.DAYS.toMillis(1))); // day before
@@ -26,4 +32,5 @@ public class Validator {
 			return null;
 		}
 	}
+
 }
