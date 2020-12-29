@@ -12,8 +12,7 @@ import com.example.demo.data.UserEntity;
 @Component
 public class PostConverter {
 
-	
-	public PostBoundary fromEntity (PostEntity entity) {
+	public PostBoundary fromEntity(PostEntity entity) {
 		PostBoundary pb = new PostBoundary();
 		pb.setUser(fromEntityUser(entity.getUser()));
 		pb.setLanguage(entity.getLanguage());
@@ -23,37 +22,36 @@ public class PostConverter {
 		return pb;
 	}
 
-	public  PostEntity toEntity (PostBoundary boundary) {
+	public PostEntity toEntity(PostBoundary boundary) {
 		PostEntity entity = new PostEntity();
 		entity.setUser(toEntityUser(boundary.getUser()));
 		entity.setLanguage(boundary.getLanguage());
 		entity.setProduct(toEntityProduct(boundary.getProduct()));
 		entity.setPostingTimestamp(boundary.getPostingTimestamp());
 		entity.setPostContent(boundary.getPostContent());
-		
 		return entity;
 	}
-	
+
 	private ProductBoundary fromEntityProduct(ProductEntity entity) {
 		ProductBoundary boundary = new ProductBoundary();
 		boundary.setId(entity.getId());
 		return boundary;
 	}
-	
+
 	private ProductEntity toEntityProduct(ProductBoundary boundary) {
 		ProductEntity entity = new ProductEntity();
 		entity.setId(boundary.getId());
 		return entity;
 
 	}
-	
+
 	private UserBoundary fromEntityUser(UserEntity entity) {
 		UserBoundary boundary = new UserBoundary();
 		boundary.setEmail(entity.getEmail());
 		return boundary;
 	}
-	
-	private UserEntity toEntityUser (UserBoundary boundary) {
+
+	private UserEntity toEntityUser(UserBoundary boundary) {
 		UserEntity entity = new UserEntity();
 		entity.setEmail(boundary.getEmail());
 		return entity;

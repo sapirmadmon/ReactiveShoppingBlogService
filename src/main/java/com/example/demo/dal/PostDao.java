@@ -1,7 +1,6 @@
 package com.example.demo.dal;
 
 import java.util.Date;
-
 import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.repository.reactive.ReactiveSortingRepository;
@@ -10,25 +9,27 @@ import com.example.demo.data.PostEntity;
 
 import reactor.core.publisher.Flux;
 
-public interface PostDao extends ReactiveSortingRepository<PostEntity, String>{
+public interface PostDao extends ReactiveSortingRepository<PostEntity, String> {
 
-	public Flux<PostEntity> findAllByUser_Email(
-			@Param("email") String email, 
-			Sort sort);
+	public Flux<PostEntity> findAllByUser_Email(@Param("email") String email, Sort sort);
 
-	public Flux<PostEntity> findAllByUser_EmailAndLanguage(
-			@Param("email") String email, 
-			@Param("language") String language,
-			Sort sort);
-
-	public Flux<PostEntity> findAllByUser_EmailAndPostingTimestampGreaterThanEqual(
-			@Param("email") String email, 
+	public Flux<PostEntity> findAllByUser_EmailAndLanguage(@Param("email") String email,
+			@Param("language") String language, Sort sort);
+	
+	public Flux<PostEntity> findAllByUser_EmailAndPostingTimestampGreaterThanEqual(@Param("email") String email,
 			@Param("postingTimestamp") Date date, Sort by);
 
-	public Flux<PostEntity> findAllByUser_EmailAndProduct_Id(
-			@Param("email") String email, 
-			@Param("id") String id,
+	public Flux<PostEntity> findAllByUser_EmailAndProduct_Id(@Param("email") String email, @Param("id") String id,
 			Sort by);
-	
-	
+
+	public Flux<PostEntity> findAllByProduct_IdAndLanguage(@Param("productId") String productId,
+			@Param("value") String value, Sort by);
+
+	public Flux<PostEntity> findAllByProduct_IdAndPostingTimestampGreaterThanEqual(@Param("productId") String productId,
+			@Param("postingTimestamp") Date date, Sort by);
+
+	public Flux<PostEntity> findAllByProduct_Id(@Param("ProductId")String productId, Sort by);
+
+	public Flux<PostEntity> findAllByPostingTimestampGreaterThanEqual(@Param("postingTimestamp")Date date, Sort by);
+		
 }
