@@ -46,11 +46,8 @@ public class ShoppingBlogServiceWithDb implements ShoppingBlogService {
 	public Mono<PostBoundary> createPost(PostBoundary post) {
 
 		return Mono.just(post).map(boundary -> {
-			ZoneId defaultZoneId = ZoneId.systemDefault();
-			LocalDate localDate = LocalDate.now().minusDays(5);
-
-			Date date = Date.from(localDate.atStartOfDay(defaultZoneId).toInstant());
-			boundary.setPostingTimestamp(date);
+			
+			boundary.setPostingTimestamp(new Date());
 			return boundary;
 		}).map(boundary -> this.converter.toEntity(boundary)).flatMap(entity -> this.posts.save(entity))
 				.map(this.converter::fromEntity);
@@ -75,7 +72,7 @@ public class ShoppingBlogServiceWithDb implements ShoppingBlogService {
 	public Flux<PostBoundary> getByCreation(String email, String value, String sortBy, boolean sortOrder) {
 		Date date = this.validator.validDate(value);
 		if (date == null) {
-			throw new BadTypeDateFormatException("Date type should be 'LastDay'/'LastWeek'/'LastMonth'");
+			throw new BadTypeDateFormatException("Date type should be 'lastDay'/'lastWeek'/'lastMonth'");
 		}
 
 		return this.posts.findAllByUser_EmailAndPostingTimestampGreaterThanEqual(email, date,
@@ -98,7 +95,7 @@ public class ShoppingBlogServiceWithDb implements ShoppingBlogService {
 	public Flux<PostBoundary> getPostsByCreation(String productId, String value, String sortBy, boolean sortOrder) {
 		Date date = this.validator.validDate(value);
 		if (date == null) {
-			throw new BadTypeDateFormatException("Date type should be 'LastDay'/'LastWeek'/'LastMonth'");
+			throw new BadTypeDateFormatException("Date type should be 'lastDay'/'lastWeek'/'lastMonth'");
 		}
 
 		return this.posts.findAllByProduct_IdAndPostingTimestampGreaterThanEqual(productId, date,
@@ -115,7 +112,7 @@ public class ShoppingBlogServiceWithDb implements ShoppingBlogService {
 	public Flux<PostBoundary> getAllPostsByCreation(String filterValue, String sortAttr, boolean sortOrder) {
 		Date date = this.validator.validDate(filterValue);
 		if (date == null) {
-			throw new BadTypeDateFormatException("Date type should be 'LastDay'/'LastWeek'/'LastMonth'");
+			throw new BadTypeDateFormatException("Date type should be 'lastDay'/'lastWeek'/'lastMonth'");
 		}
 
 		return this.posts.findAllByPostingTimestampGreaterThanEqual(date,
