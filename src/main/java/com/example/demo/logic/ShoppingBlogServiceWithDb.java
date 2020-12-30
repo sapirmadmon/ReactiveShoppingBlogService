@@ -1,10 +1,8 @@
 package com.example.demo.logic;
 
-import java.lang.instrument.IllegalClassFormatException;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
-import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -16,7 +14,6 @@ import com.example.demo.dal.PostDao;
 import com.example.demo.data.converter.PostConverter;
 import com.example.demo.exceptions.BadTypeDateFormatException;
 import com.example.demo.exceptions.BadTypeFilterValueException;
-import com.example.demo.utility.TimeEnum;
 import com.example.demo.validator.Validator;
 
 import reactor.core.publisher.Flux;

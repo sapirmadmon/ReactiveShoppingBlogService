@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.boundaries.PostBoundary;
 import com.example.demo.data.OrderEnum;
+import com.example.demo.exceptions.BadFilterTypeException;
 import com.example.demo.logic.ShoppingBlogService;
 import com.example.demo.utility.ControllerTypes;
 
@@ -41,69 +42,68 @@ public class ShoppingBlogController {
 
 	@RequestMapping(path = "/blog/byUser/{email}", method = RequestMethod.GET, produces = MediaType.TEXT_EVENT_STREAM_VALUE)
 	public Flux<PostBoundary> getPostsByUser(@PathVariable("email") String email,
-			@RequestParam(name = "filterType", required = false, defaultValue = "") String type,
-			@RequestParam(name = "filterValue", required = false) String value,
-			@RequestParam(name = "sortBy", required = false, defaultValue = "postingTimestamp") String sortBy,
+			@RequestParam(name = "filterType", required = false, defaultValue = "") String filterType,
+			@RequestParam(name = "filterValue", required = false) String filterValue,
+			@RequestParam(name = "sortBy", required = false, defaultValue = "postingTimestamp") String sortAttr,
 			@RequestParam(name = "sortOrder", required = false, defaultValue = "ASC") OrderEnum order) {
 
-		switch (type) {
+		switch (filterType) {
 		case ControllerTypes.BY_LANGUAGE:
-
-			return this.shoppingBlogService.getByLanguage(email, value, sortBy, order.equals(OrderEnum.ASC));
+			return this.shoppingBlogService.getByLanguage(email, filterValue, sortAttr, order.equals(OrderEnum.ASC));
 
 		case ControllerTypes.BY_CREATION:
-			return this.shoppingBlogService.getByCreation(email, value, sortBy, order.equals(OrderEnum.ASC));
+			return this.shoppingBlogService.getByCreation(email, filterValue, sortAttr, order.equals(OrderEnum.ASC));
 
 		case ControllerTypes.BY_PRODUCT:
-			return this.shoppingBlogService.getByProduct(email, value, sortBy, order.equals(OrderEnum.ASC));
+			return this.shoppingBlogService.getByProduct(email, filterValue, sortAttr, order.equals(OrderEnum.ASC));
 
 		default:
-			return this.shoppingBlogService.getAll(email, sortBy, order.equals(OrderEnum.ASC));
+			return this.shoppingBlogService.getAll(email, sortAttr, order.equals(OrderEnum.ASC));
 		}
 	}
 
 	@RequestMapping(path = "/blog/byProduct/{productId}", method = RequestMethod.GET, produces = MediaType.TEXT_EVENT_STREAM_VALUE)
 	public Flux<PostBoundary> getPostsByProduct(@PathVariable("productId") String productId,
-			@RequestParam(name = "filterType", required = false, defaultValue = "") FilterType type,
-			@RequestParam(name = "filterValue", required = false) String value,
-			@RequestParam(name = "sortBy", required = false, defaultValue = "postingTimestamp") String sortBy,
-			@RequestParam(name = "sortOrder", required = false, defaultValue = "ASC") OrderEnum order) {
-
-		switch (type.name()) {
-		case "byLanguage":
-			return this.shoppingBlogService.getPostsByLanguage(productId, value, sortBy, order.equals(OrderEnum.ASC));
-
-		case "byCreation":
-			return this.shoppingBlogService.getPostsByCreation(productId, value, sortBy, order.equals(OrderEnum.ASC));
-
-		default:
-			return this.shoppingBlogService.getAllPosts(productId, sortBy, order.equals(OrderEnum.ASC));
-		}
-	}
-	
-	@RequestMapping(path="/blog", method = RequestMethod.GET, produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-	public Flux<PostBoundary> getAllPosts(
-			@RequestParam(name = "filterType", required = false) String filterType,
+			@RequestParam(name = "filterType", required = false, defaultValue = "") String filterType,
 			@RequestParam(name = "filterValue", required = false) String filterValue,
 			@RequestParam(name = "sortBy", required = false, defaultValue = "postingTimestamp") String sortAttr,
-			@RequestParam(name = "sortOrder", required = false, defaultValue = "ASC") OrderEnum order
-			){
+			@RequestParam(name = "sortOrder", required = false, defaultValue = "ASC") OrderEnum order) {
+
+		switch (filterType) {
+		case ControllerTypes.BY_LANGUAGE:
+			return this.shoppingBlogService.getPostsByLanguage(productId, filterValue, sortAttr,
+					order.equals(OrderEnum.ASC));
+
+		case ControllerTypes.BY_CREATION:
+			return this.shoppingBlogService.getPostsByCreation(productId, filterValue, sortAttr,
+					order.equals(OrderEnum.ASC));
+
+		default:
+			return this.shoppingBlogService.getAllPosts(productId, sortAttr, order.equals(OrderEnum.ASC));
+		}
+	}
+
+	@RequestMapping(path = "/blog", method = RequestMethod.GET, produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+	public Flux<PostBoundary> getAllPosts(@RequestParam(name = "filterType", required = true) String filterType,
+			@RequestParam(name = "filterValue", required = false) String filterValue,
+			@RequestParam(name = "sortBy", required = false, defaultValue = "postingTimestamp") String sortAttr,
+			@RequestParam(name = "sortOrder", required = false, defaultValue = "ASC") OrderEnum order) {
 		switch (filterType) {
 		case ControllerTypes.BY_CREATION:
 			return this.shoppingBlogService.getAllPostsByCreation(filterValue, sortAttr, order.equals(OrderEnum.ASC));
-			
-		case ControllerTypes.BY_COUNT:
-			return this.shoppingBlogService.getAllPostsByCount(filterValue, "postingTimestamp", order.equals(OrderEnum.DESC));
 
-		default:	
-			return null;
+		case ControllerTypes.BY_COUNT:
+			return this.shoppingBlogService.getAllPostsByCount(filterValue, "postingTimestamp",
+					order.equals(OrderEnum.DESC));
+
+		default:
+			 throw new BadFilterTypeException("This filter type was not found");
 		}
-		
+
 	}
-	
-	@RequestMapping(path="/blog", method = RequestMethod.DELETE)
-	public Mono<Void> deleteAll(){
+
+	@RequestMapping(path = "/blog", method = RequestMethod.DELETE)
+	public Mono<Void> deleteAll() {
 		return this.shoppingBlogService.deleteAll();
-		
 	}
 }
