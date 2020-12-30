@@ -33,12 +33,6 @@ public class ShoppingBlogController {
 		return this.shoppingBlogService.createPost(post);
 	}
 
-//	@RequestMapping(path = "/blog/byUser/{email}", method = RequestMethod.GET, produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-//	public Flux<PostBoundary> getPostsByEmail(@PathVariable("email") String email,
-//			@RequestParam(name = "sortBy", required = false, defaultValue = "postingTimestamp") String sortBy,
-//			@RequestParam(name = "order", required = false, defaultValue = "ASC") OrderEnum order) {
-//		return this.shoppingBlogService.getAll(email, sortBy, order.equals(OrderEnum.ASC));
-//	}
 
 	@RequestMapping(path = "/blog/byUser/{email}", method = RequestMethod.GET, produces = MediaType.TEXT_EVENT_STREAM_VALUE)
 	public Flux<PostBoundary> getPostsByUser(@PathVariable("email") String email,
