@@ -13,57 +13,65 @@ Product Microservice API:
     <th>Route</th>
     <th>Usage</th>
 		<tr>
-			<td><b>GET</b></td>
-			<td>/shopping/categories?sortBy={sortArrt}&sortOrder={order}&page={page}&size={size}</td>
-			<td>An action that returns all the categories in the system, without the product details, is sorted according to the variables specified in the URL.</td>
+			<td><b>POST</b></td>
+			<td> /blog</td>
+			<td>An action that receives a user's post about a product and saves it in the database.
+				Users can post posts without a quantity limit and that each post pertains to a specific product.
+				This action returns Mono.</td>
 		</tr>
 		<tr>
 			<td><b>GET</b></td>
-			<td> /shopping/products/{productId} </td>
-			<td>An action that returns a particular product according to its catalog number. If there is no such product in the system, the operation will return 					error code 404.</td>
+			<td> /blog/byUser/{email}?sortBy={sortArrt}&sortOrder={order} </td>
+			<td>An action that returns sorted  Flux with all posts posted by a specific user.</td>
 		</tr>
 		<tr>
 			<td><b><b>GET</b></b></td>
-			<td>/shopping/products?sortBy={sortAttr}&sortOrder={order}&page={page)&size={size}</td>
-			<td>An action that returns in a sorted manner all the products that exist in the service.</td>
+			<td>/blog/byUser/{email}?filterType=byLanguage&filterValue={language}&sortBy={sortArrt}&sortOrder={order}</td>
+			<td>An action that returns sorted Flux of all posts posted by a specific user, written in the language defined in the URL.</td>
 		</tr>
 		<tr>
 			<td><b>GET</b></td>
-			<td>/shopping/products?filterType=byName&filterValue={productName}&sortBy={sortAttr}&sortOrder={order}&page={page)&size={size}</td>
-			<td>An action that returns in a sorted manner all the products with the name specified in the URL.</td>
+			<td>/blog/byUser/{email}?filterType=byCreation&filterValue={timeEnum}&sortBy={sortArrt}&sortOrder={order}</td>
+			<td>An action that returns a sorted Flux of all posts posted by a specific user, posted at a specific time.<br>
+				timeEnum can have one of the following values:<br>
+				lastDay - will return posts published in the last 24 hours.<br>
+				lastWeek - will return posts published in the last week.<br>
+				lastMonth - will return posts published in the last 30 days.</td>
 		</tr>
 		<tr>
 			<td><b>GET</b></td>
-			<td>/shopping/products?filterType=byMinPrice&filterValue={minPrice}&sortBy={sortAttr}&sortOrder={order}&page={page)&size={size}</td>
-			<td>An operation that returns in a sorted manner all products whose price is at least a minimum price specified in the URL.</td>
+			<td>/blog/byUser/{email}?filterType=byProduct&filterValue={productId}&sortBy={sortArrt}&sortOrder={order} </td>
+			<td>An action that returns a sorted Flux of all posts posted by a specific user on a specific product, whose identifier is defined in the URL.</td>
 		</tr>
 		<tr>
 			<td><b>GET</b></td>
-			<td>/shopping/products?filterType=byMaxPrice&filterValue={maxPrice}&sortBy={sortAttr}&sortOrder={order}&page={page)&size={size}</td>
-			<td>An action that returns in a sorted manner all products whose price is at most the maximum price specified in the URL.</td>
+			<td> /blog/byProduct/{productId}?sortBy={sortArrt}&sortOrder={order</td>
+			<td>An action that returns all the posts on a specific product, that returns a sorted Flux.</td>
 		</tr>
 		<tr>
 			<td><b>GET</b></td>
-			<td>/shopping/products?filterType=byCategoryName&filterValue={categoryName}&sortBy={sortAttr}&sortOrder={order}&page={page)&size={size}</td>
-			<td>An action that returns in a sorted manner all the products that belong to a certain category, whose name is indicated in the URL.</td>
+			<td>/blog/byProduct/{productId}?filterType=byLanguage&filterValue={language}&sortBy={sortArrt}&sortOrder={order} </td>
+			<td>An action that returns a sorted Flux of all posts on a specific product, written in the language defined in the URL.</td>
 		</tr>
     <tr>
-			<td><b>POST</b></td>
-			<td>/shopping/categories</td>
-			<td>An action that receives category information of products, and stores it in the system.
-				If a category with this name already exists, the operation will return error code 500.</td>
+			<td><b>GET</b></td>
+			<td> /blog/byProduct/{productId}?filterType=byCreation&filterValue={timeEnum}&sortBy={sortArrt}&sortOrder={order}</td>
+			<td>An action that returns a sorted Flux of all posts on a specific product, published at a particular date.</td>
 		</tr>   
     <tr>
-			<td><b>POST</b></td>
-			<td>/shopping/products</td>
-			<td>An action that receives details of a new product, which already includes a catalog number defined by the service operators and stores it.
-				If a product with the same catalog number already exists, the service will return an error code of 500.
-				When creating a product, the category defined for it must exist in the system. Otherwise, an error code of 500 will be returned.</td>
+			<td><b>GET</b></td>
+			<td>/blog?filterType=byCreation&filterValue={timeEnum}&sortBy={sortArrt}&sortOrder={order}</td>
+			<td>An action that returns a sorted Flux of all posts posted at a specific time.</td>
+		</tr>
+	  <tr>
+			<td><b>GET</b></td>
+			<td>/blog?filterType=byCount&filterValue={postsCount}/td>
+			<td>An action that returns a sorted Flux of a certain number of recent posts posted on the service. The maximum number of posts that the service needs to 				return will be set in the postsCount variable.</td>
 		</tr>
     <tr>
 			<td><b>DELETE</b></td>
-			<td>/shopping</td>
-			<td>An action that deletes all the products and categories that the service manages and returns nothing.</td>
+			<td>/blog</td>
+			<td>An action that deletes all product posts and returns empty Mono</td>
 		</tr>
 
 </table>
