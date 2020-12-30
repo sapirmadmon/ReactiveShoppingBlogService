@@ -71,7 +71,7 @@ Product Microservice API:
     <tr>
 			<td><b>DELETE</b></td>
 			<td>/blog</td>
-			<td>An action that deletes all product posts and returns empty Mono</td>
+			<td>An action that deletes all product posts and returns empty Mono.</td>
 		</tr>
 
 </table>
