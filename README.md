@@ -74,6 +74,23 @@ Product Microservice API:
 ```json
 {
   "user":{
+    "email":"customer11@shop.ping"
+  }, 
+  "product":{
+    "id":"p12x"
+  },  
+  "postingTimestamp":"2020-12-10T04:12:39.053+0000", 
+  "language":"en", 
+  "postContent":{
+    "text":"I really like this product"
+  }
+}
+
+
+```
+```json
+{
+  "user":{
     "email":"customer98@shop.ping"
   }, 
   "product":{
