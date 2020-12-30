@@ -1,8 +1,9 @@
 # ReactiveShoppingBlogService
 
 ## Description
-This Microservice built in Java using SpringBoot framework, with Gradle build tools.<br>
-The database was configured using using neo4j to store the data.
+Reactive Blog Microservice.<br>
+This Microservice built in Java using SpringBoot framework, with Gradle build tools.
+
 
 
 ## Usage
@@ -67,40 +68,53 @@ Product Microservice API:
 
 </table>
 
-## Neo4j Demo
 
-<div>
-  <img src="docs/neo4j.png" alt="database demo"</img>      
-</div>
+## Blog posts JSON examples
+
+```json
+{
+  "user":{
+    "email":"customer98@shop.ping"
+  }, 
+  "product":{
+    "id":"a32f"
+  }, 
+  "postingTimestamp":"2020-12-10T04:27:01.312+0000", 
+  "language":"en", 
+  "postContent":{
+    "details":"the product installation is difficult", 
+    "reference":"https://www.amazonas.corp/pid=a32f"
+  }
+}
 
 
-## Product JSON Examples
-
+```
 ```json
 
     {
-      "id": "175",
-      "name": "Adidas",
-      "price": 276.12,
-      "image": "http://somesite.com/adi.jpg",
-      "productDetails": {
-        "stock": 76,
-        "discount": false,
-      },
-      "category": {
-        "name": "shoes",
-        "description":"holds all the shoes is the system"
-      }
-    }
+  "user":{
+    "email":"customerNumber1@shop.ping"
+  }, 
+  "product":{
+    "id":"38996"
+  },  
+  "postingTimestamp":"2020-12-10T04:31:44.739+0000", 
+  "language":"en", 
+  "postContent":{
+    "image":"http://image.im/product38996.jpg", 
+    "message":"This product changed my life!", 
+    "details":{
+      "line1":"The fire consumed my apartment building",
+      "line2":"I had to move to a shelter"
+    }, 
+    "references":[
+      "https://newscase.org/firebrokeduetomulfunctioninproduct", 
+      "http://www.cnn.com", 
+      "http://demoservice.de.mo/story?stodyId=985645211596037"
+    ]
+  }
+}
     
 ```
 
-## Category JSON Examples
- 
-```json
 
-    {
-        "name":"shoes", 
-        "description":"hold all type of shoes"
-    }
-```
